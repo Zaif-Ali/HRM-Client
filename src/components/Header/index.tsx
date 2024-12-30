@@ -12,7 +12,7 @@ const Header = () => {
   let firstIndex = pathname.split('/')[1] || 'dashboard';
   firstIndex = firstIndex.charAt(0).toUpperCase() + firstIndex.slice(1);
   return (
-    <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background">
+    <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background z-40">
       <div className="flex flex-1 justify-between items-center gap-2 px-3">
         <div className="flex items-center gap-2">
           <SidebarTrigger />
