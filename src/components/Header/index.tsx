@@ -1,7 +1,7 @@
 import { Separator } from '../ui/separator';
 import { SidebarTrigger } from '../ui/sidebar';
 import { Button } from '../ui/button';
-import { Bell, Inbox, Languages, Moon, Slash } from 'lucide-react';
+import { Inbox } from 'lucide-react';
 import { Label } from '../ui/label';
 import ThemeButton from '../Button/ThemeButton';
 import NotificationsSheet from '../Sheet/Notifications';

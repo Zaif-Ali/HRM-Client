@@ -14,9 +14,7 @@ import {
   Inbox,
   LucideIcon,
   PersonStanding,
-  TrendingUp,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -31,7 +29,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { Link } from 'react-router-dom';
+import { GitCommitVertical } from 'lucide-react';
+import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
+
 const Dashboard = () => {
   const Sections: {
     Icon: LucideIcon;
@@ -145,6 +145,39 @@ const Dashboard = () => {
     },
   } satisfies ChartConfig;
   const totalVisitors = chartData[0].accepted + chartData[0].rejected;
+  const PayrollChartData = [
+    { month: 'January', grossSalary: 186, taxDeduction: 80, netSalary: 106 },
+    { month: 'February', grossSalary: 305, taxDeduction: 200, netSalary: 105 },
+    { month: 'March', grossSalary: 237, taxDeduction: 120, netSalary: 117 },
+    { month: 'April', grossSalary: 600, taxDeduction: 100, netSalary: 500 },
+    { month: 'May', grossSalary: 609, taxDeduction: 100, netSalary: 509 },
+    { month: 'June', grossSalary: 914, taxDeduction: 10, netSalary: 904 },
+  ];
+  const PayrollChartConfig = {
+    grossSalary: {
+      label: 'grossSalary',
+      color: 'hsl(var(--chart-1))',
+    },
+    taxDeduction: {
+      label: 'taxDeduction',
+      color: 'hsl(var(--chart-2))',
+    },
+    netSalary: {
+      label: 'netSalary',
+      color: 'hsl(var(--chart-3))',
+    },
+  } satisfies ChartConfig;
+
+  const allMonths = [
+    'January', 'February', 'March', 'April', 'May', 'June', 'July',
+    'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  const mergedData = allMonths.map(month => {
+    const dataForMonth = PayrollChartData.find(item => item.month === month);
+    return dataForMonth ? dataForMonth : { month, grossSalary: null, taxDeduction: null, netSalary: null };
+  });
+
   return (
     <React.Fragment>
       <main className="flex flex-col xl:flex-row gap-4">
@@ -159,7 +192,7 @@ const Dashboard = () => {
               Nice to meet you again!
             </span>
           </BlurFade>
-          <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2 ">
+          <div className="mt-2 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 ">
             {Sections.map((section, sectionIndex) => {
               return (
                 <BlurFade
@@ -188,102 +221,107 @@ const Dashboard = () => {
               );
             })}
           </div>
-          <section className="w-full lg:w-1/2 my-2">
-            <div className="">
-              <BlurFade delay={0.25} inView>
-                <Card className="flex flex-col border h-64 bg-background ">
-                  <CardHeader className="items-center pb-0">
-                    <CardTitle>Request Chart</CardTitle>
-                    <CardDescription className="text-center">
-                      January 2025
-                      <div className="leading-4 text-muted-foreground">
-                        Showing total accepted and rejected requests of this
-                        month
-                      </div>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex flex-1 items-center pb-0">
-                    <ChartContainer
-                      config={chartConfig}
-                      className="mx-auto aspect-square w-full max-w-[250px]"
+          <section className="w-full">
+            <div>
+              <Card className="shadow-none border-none bg-transparent">
+                <CardHeader className="px-0">
+                  <CardTitle className="text-xl">Payroll Summary</CardTitle>
+                  <CardDescription>January - June 2024</CardDescription>
+                </CardHeader>
+                <CardContent className="px-0">
+                  <ChartContainer className="" config={PayrollChartConfig}>
+                    <LineChart
+                      accessibilityLayer
+                      data={mergedData}
+                      margin={{
+                        left: 10,
+                        right: 10,
+                      }}
                     >
-                      <RadialBarChart
-                        data={chartData}
-                        endAngle={180}
-                        innerRadius={80}
-                        outerRadius={130}
-                      >
-                        <ChartTooltip
-                          cursor={false}
-                          content={<ChartTooltipContent hideLabel />}
-                        />
-                        <PolarRadiusAxis
-                          tick={false}
-                          tickLine={false}
-                          axisLine={false}
-                        >
-                          <RechartLabel
-                            content={({ viewBox }) => {
-                              if (
-                                viewBox &&
-                                'cx' in viewBox &&
-                                'cy' in viewBox
-                              ) {
-                                return (
-                                  <text
-                                    x={viewBox.cx}
-                                    y={viewBox.cy}
-                                    textAnchor="middle"
-                                  >
-                                    <tspan
-                                      x={viewBox.cx}
-                                      y={(viewBox.cy || 0) - 16}
-                                      className="fill-foreground text-2xl font-bold"
-                                    >
-                                      {totalVisitors.toLocaleString()}
-                                    </tspan>
-                                    <tspan
-                                      x={viewBox.cx}
-                                      y={(viewBox.cy || 0) + 4}
-                                      className="fill-muted-foreground"
-                                    >
-                                      Requests
-                                    </tspan>
-                                  </text>
-                                );
-                              }
-                              return null;
-                            }}
-                          />
-                        </PolarRadiusAxis>
-                        <RadialBar
-                          dataKey="rejected"
-                          stackId="a"
-                          cornerRadius={5}
-                          fill="var(--color-desktop)"
-                          className="stroke-transparent stroke-2"
-                        />
-                        <RadialBar
-                          dataKey="accepted"
-                          fill="var(--color-mobile)"
-                          stackId="a"
-                          cornerRadius={5}
-                          className="stroke-transparent stroke-2"
-                        />
-                      </RadialBarChart>
-                    </ChartContainer>
-                  </CardContent>
-                  <CardFooter className="flex-col gap-2 "></CardFooter>
-                </Card>
-              </BlurFade>
+                      <CartesianGrid color="var(--color-desktop)" />
+                      <XAxis
+                        dataKey="month"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                        tickFormatter={(value) => value.slice(0, 3)}
+                      />
+                      <ChartTooltip
+                        cursor={false}
+                        labelFormatter={(value) => value.slice(0, 3)}
+                        content={({ payload }) => {
+                          if (payload && payload.length > 0) {
+                            const {
+                              grossSalary,
+                              taxDeduction,
+                              netSalary,
+                              month,
+                            } = payload[0].payload;
+                            return (
+                              <div className="bg-card w-44 p-1 rounded-md shadow-lg">
+                                <Label className="my-2 text-sm">{month}</Label>
+                                <Label className="my-1 block text-xs">
+                                  <span>Gross Salary</span>
+                                  <span className="float-right">
+                                    {grossSalary}
+                                  </span>
+                                </Label>
+                                <Label className="my-1 block text-xs">
+                                  <span>Tax Deduction</span>
+                                  <span className="float-right">
+                                    {taxDeduction}
+                                  </span>
+                                </Label>
+                                <Separator />
+                                <Label className="my-1 block text-xs">
+                                  <span>Net Salary</span>
+                                  <span className="float-right">
+                                    {netSalary}
+                                  </span>
+                                </Label>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Line
+                        dataKey="netSalary"
+                        type="monotone"
+                        strokeWidth={2}
+                        fill="#3b82f6"
+                        stroke="#3b82f6"
+                        dot={({ cx, cy, payload }) => {
+                          if (!payload || !payload.netSalary) {
+                            return <></>;
+                          }
+                          const r = 30;
+                          return (
+                            <GitCommitVertical
+                              key={payload.month}
+                              x={cx - r / 2}
+                              y={cy - r / 2}
+                              width={r}
+                              height={r}
+                              fill="hsl(var(--background))"
+                              color='#3b82f6'
+                              stroke="#3b82f6 "
+                            />
+                          );
+                        }}
+                      />
+                    </LineChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
             </div>
           </section>
         </section>
-        <section className="xl:w-1/2 ">
+        <section className="xl:w-1/2">
           <div className="">
             <BlurFade delay={0.25} inView>
               <Card className="bg-background border-none shadow-none">
-                <CardHeader className="p-4">
+                <CardHeader className="xl:p-4">
                   <CardTitle className="text-xl">Upcoming Meetings</CardTitle>
                   <CardDescription className="text-sm">
                     This is a list of all upcoming meetings.
@@ -303,7 +341,11 @@ const Dashboard = () => {
                         </Label>
                         {EachDay.meetings.map((meeting, meetingIndex) => {
                           return (
-                            <BlurFade delay={0.25 + 0.25 * meetingIndex} inView key={meetingIndex}>
+                            <BlurFade
+                              delay={0.25 + 0.25 * meetingIndex}
+                              inView
+                              key={meetingIndex}
+                            >
                               <div
                                 className="md:grid grid-cols-6 row-span-1 gap-6 mt-3 border rounded-md p-2 bg-secondary cursor-pointer"
                                 key={meetingIndex}
@@ -361,6 +403,89 @@ const Dashboard = () => {
                     );
                   })}
                 </CardContent>
+              </Card>
+            </BlurFade>
+          </div>
+          <div className="">
+            <BlurFade delay={0.25} inView>
+              <Card className="flex flex-col shadow-none border-none h-60 bg-background ">
+                <CardHeader className="pb-0">
+                  <CardTitle className="text-xl">Request Chart</CardTitle>
+                  <CardDescription className="">
+                    January 2025
+                    <div className="leading-4 text-muted-foreground">
+                      Showing total accepted and rejected requests of this month
+                    </div>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-1 items-center pb-0">
+                  <ChartContainer
+                    config={chartConfig}
+                    className="mx-auto aspect-square w-full max-w-[250px]"
+                  >
+                    <RadialBarChart
+                      data={chartData}
+                      endAngle={180}
+                      innerRadius={80}
+                      outerRadius={130}
+                    >
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent hideLabel />}
+                      />
+                      <PolarRadiusAxis
+                        tick={false}
+                        tickLine={false}
+                        axisLine={false}
+                      >
+                        <RechartLabel
+                          content={({ viewBox }) => {
+                            if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
+                              return (
+                                <text
+                                  x={viewBox.cx}
+                                  y={viewBox.cy}
+                                  textAnchor="middle"
+                                >
+                                  <tspan
+                                    x={viewBox.cx}
+                                    y={(viewBox.cy || 0) - 16}
+                                    className="fill-foreground text-2xl font-bold"
+                                  >
+                                    {totalVisitors.toLocaleString()}
+                                  </tspan>
+                                  <tspan
+                                    x={viewBox.cx}
+                                    y={(viewBox.cy || 0) + 4}
+                                    className="fill-muted-foreground"
+                                  >
+                                    Requests
+                                  </tspan>
+                                </text>
+                              );
+                            }
+                            return null;
+                          }}
+                        />
+                      </PolarRadiusAxis>
+                      <RadialBar
+                        dataKey="rejected"
+                        stackId="a"
+                        cornerRadius={5}
+                        fill="var(--color-desktop)"
+                        className="stroke-transparent stroke-2"
+                      />
+                      <RadialBar
+                        dataKey="accepted"
+                        fill="var(--color-mobile)"
+                        stackId="a"
+                        cornerRadius={5}
+                        className="stroke-transparent stroke-2"
+                      />
+                    </RadialBarChart>
+                  </ChartContainer>
+                </CardContent>
+                <CardFooter className="flex-col gap-2 "></CardFooter>
               </Card>
             </BlurFade>
           </div>

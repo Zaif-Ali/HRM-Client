@@ -3,16 +3,18 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage for
 import { combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import userReducer from './features/user/index';
+import requestReducer from './features/request/index';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['user'], // only persist these features
+  whitelist: ['user','request'], // only persist these features
 };
 
 const rootReducer = combineReducers({
   user: userReducer,
+  request: requestReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
