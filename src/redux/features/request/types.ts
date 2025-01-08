@@ -1,15 +1,26 @@
-import { LucideIcon } from 'lucide-react';
-
-type RequestT = {
-  label: string;
-  value: string;
-  icon?: LucideIcon;
-  availableRequests: number;
+export type TRequestFilters = {
+  search: string | null;
+  status: string[] | null;
+  type: string[] | null;
+  timestamp: string  | null;
 };
 
-type RequestFilters = {
-  search: string | null;
-  status: string | null;
-  type: string | null;
-  timestamp: string | null;
+export type TRequest = {
+  id: string;
+  type: string;
+  status: string;
+  timestamp: string;
+  subject: string;
+  content: string;
+  user: {
+    name: string;
+    email: string;
+    image: string;
+  };
+};
+
+export type TRequestState = {
+  filters: TRequestFilters;
+  currentRequestID: string | null;
+  requests: TRequest[];
 };
