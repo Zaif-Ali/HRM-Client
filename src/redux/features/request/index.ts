@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TRequestFilters, TRequestState, TRequest } from './types';
+import { TRequestFilters, TRequestState, TRequest, TCurrentRequestStep } from './types';
 
 export const initialState: TRequestState = {
   filters: {
@@ -8,7 +8,10 @@ export const initialState: TRequestState = {
     type: [],
     timestamp: null,
   },
-  currentRequestID: null,
+  currentRequest: {
+    requestId: null,
+    currentStep: 'view',
+  },
   requests: [],
 };
 
@@ -68,7 +71,12 @@ export const requestSlice = createSlice({
 
     // Sets the current request ID
     setCurrentRequestID: (state, action: PayloadAction<string | null>) => {
-      state.currentRequestID = action.payload;
+      state.currentRequest.requestId = action.payload;
+    },
+
+    // Sets the current step for the request
+    setCurrentRequestStep: (state, action: PayloadAction<TCurrentRequestStep>) => {
+      state.currentRequest.currentStep = action.payload;
     },
 
     // Adds a new request to the requests array
@@ -91,10 +99,10 @@ export const requestSlice = createSlice({
         );
 
         // If the removed request's ID was the currentRequestID, update currentRequestID
-        if (state.currentRequestID === removedRequest.id) {
+        if (state.currentRequest.requestId === removedRequest.id) {
           // Set currentRequestID to the previous request's ID, if available
           const previousRequest = state.requests[requestIndex - 1];
-          state.currentRequestID = previousRequest ? previousRequest.id : null;
+          state.currentRequest.requestId = previousRequest ? previousRequest.id : null;
         }
       }
     },

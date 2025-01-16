@@ -2,7 +2,7 @@ export type TRequestFilters = {
   search: string | null;
   status: string[] | null;
   type: string[] | null;
-  timestamp: string  | null;
+  timestamp: string | null;
 };
 
 export type TRequest = {
@@ -19,8 +19,15 @@ export type TRequest = {
   };
 };
 
+export type TCurrentRequestStep = 'view' | 'reject';
+
+export type TCurrentRequest = {
+  requestId: string | number | null;
+  currentStep: TCurrentRequestStep;
+};
+
 export type TRequestState = {
   filters: TRequestFilters;
-  currentRequestID: string | null;
+  currentRequest: TCurrentRequest;
   requests: TRequest[];
 };

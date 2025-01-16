@@ -336,8 +336,8 @@ const Nav = () => {
             <Button
               variant={'outline'}
               className={cn(
-                'w-[195px] justify-start text-left font-normal',
-                !!filters.timestamp && 'text-muted-foreground border-dashed'
+                'w-[195px] justify-start text-left font-normal border-dashed',
+                !!filters.timestamp && 'text-muted-foreground '
               )}
             >
               <CalendarIcon
