@@ -31,10 +31,10 @@ const CommandBox = () => {
         variant="secondary"
         size={'sm'}
         onClick={() => setOpen(true)}
-        className="flex items-center justify-between gap-1 text-muted-foreground ml-2 my-2"
+        className="h-8 w-full justify-between px-2 font-normal text-muted-foreground"
       >
-        <div className="flex items-center">
-          <Search className="mr-2 h-4 w-4 " />
+        <div className="flex items-center gap-2">
+          <Search className="h-4 w-4" />
           Search
         </div>
         <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
