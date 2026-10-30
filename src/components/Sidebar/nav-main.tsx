@@ -25,7 +25,7 @@ export function NavMain() {
     <SidebarMenu>
       {navigationRoutes.map((section) => (
         <React.Fragment key={section.title}>
-          <Label className="mb-2 text-sm font-normal text-muted-foreground">
+          <Label className="ml-2 my-2 text-sm font-normal text-muted-foreground">
             {section.title}
           </Label>
           {section.items.map((item) => (

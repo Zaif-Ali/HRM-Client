@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -8,7 +7,6 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from '@/components/ui/command';
 import { Button } from '../ui/button';
 import { Search } from 'lucide-react';
@@ -33,7 +31,7 @@ const CommandBox = () => {
         variant="secondary"
         size={'sm'}
         onClick={() => setOpen(true)}
-        className="flex items-center justify-between gap-1 text-muted-foreground"
+        className="flex items-center justify-between gap-1 text-muted-foreground ml-2 my-2"
       >
         <div className="flex items-center">
           <Search className="mr-2 h-4 w-4 " />
