@@ -50,7 +50,7 @@ const ProfileDropdown = () => {
               <button
                 type="button"
                 aria-label="Open account menu"
-                className="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                className="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
                 {collapsed ? (
                   <Avatar className="h-8 w-8">
@@ -73,8 +73,6 @@ const ProfileDropdown = () => {
               sideOffset={8}
             >
               <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Requests</DropdownMenuItem>
-              <DropdownMenuItem>Notifications</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>

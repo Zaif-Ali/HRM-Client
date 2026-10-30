@@ -137,11 +137,11 @@ const Dashboard = () => {
   const chartConfig = {
     desktop: {
       label: 'accepted',
-      color: 'hsl(var(--chart-1))',
+      color: 'var(--chart-1)',
     },
     mobile: {
       label: 'rejected',
-      color: 'hsl(var(--chart-2))',
+      color: 'var(--chart-2)',
     },
   } satisfies ChartConfig;
   const totalVisitors = chartData[0].accepted + chartData[0].rejected;
@@ -156,15 +156,15 @@ const Dashboard = () => {
   const PayrollChartConfig = {
     grossSalary: {
       label: 'grossSalary',
-      color: 'hsl(var(--chart-1))',
+      color: 'var(--chart-1)',
     },
     taxDeduction: {
       label: 'taxDeduction',
-      color: 'hsl(var(--chart-2))',
+      color: 'var(--chart-2)',
     },
     netSalary: {
       label: 'netSalary',
-      color: 'hsl(var(--chart-3))',
+      color: 'var(--chart-3)',
     },
   } satisfies ChartConfig;
 
@@ -244,11 +244,11 @@ const Dashboard = () => {
                         tickLine={false}
                         axisLine={false}
                         tickMargin={8}
-                        tickFormatter={(value) => value.slice(0, 3)}
+                        tickFormatter={(value) => String(value).slice(0, 3)}
                       />
                       <ChartTooltip
                         cursor={false}
-                        labelFormatter={(value) => value.slice(0, 3)}
+                        labelFormatter={(value) => String(value).slice(0, 3)}
                         content={({ payload }) => {
                           if (payload && payload.length > 0) {
                             const {
@@ -292,7 +292,12 @@ const Dashboard = () => {
                         fill="#3b82f6"
                         stroke="#3b82f6"
                         dot={({ cx, cy, payload }) => {
-                          if (!payload || !payload.netSalary) {
+                          if (
+                            cx == null ||
+                            cy == null ||
+                            !payload ||
+                            !payload.netSalary
+                          ) {
                             return <></>;
                           }
                           const r = 30;
@@ -303,9 +308,9 @@ const Dashboard = () => {
                               y={cy - r / 2}
                               width={r}
                               height={r}
-                              fill="hsl(var(--background))"
-                              color='#3b82f6'
-                              stroke="#3b82f6 "
+                              fill="var(--background)"
+                              color="#3b82f6"
+                              stroke="#3b82f6"
                             />
                           );
                         }}

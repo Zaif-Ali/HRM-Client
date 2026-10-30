@@ -1,10 +1,7 @@
 import { Separator } from '../ui/separator';
 import { SidebarTrigger } from '../ui/sidebar';
-import { Button } from '../ui/button';
-import { Inbox } from 'lucide-react';
 import { Label } from '../ui/label';
 import ThemeButton from '../Button/ThemeButton';
-import NotificationsSheet from '../Sheet/Notifications';
 import { useLocation } from 'react-router-dom';
 
 const Header = () => {
@@ -20,16 +17,6 @@ const Header = () => {
           <Label className="line-clamp-1">{firstIndex}</Label>
         </div>
         <div className="flex items-center gap-2">
-          <Separator orientation="vertical" className="ml-2 h-4" />
-          <NotificationsSheet />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 relative inline-flex"
-          >
-            <Inbox />
-            <span className="sr-only">Inbox</span>
-          </Button>
           <ThemeButton />
         </div>
       </div>
