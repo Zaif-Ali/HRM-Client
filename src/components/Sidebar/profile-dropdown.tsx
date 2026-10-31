@@ -1,4 +1,7 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { MoreHorizontal } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,6 +9,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { SidebarMenu, SidebarMenuItem, useSidebar } from '../ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
@@ -17,8 +29,13 @@ const user = {
 };
 
 const ProfileDropdown = () => {
-  const { state, isMobile } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const collapsed = state === 'collapsed' && !isMobile;
+  const [logoutOpen, setLogoutOpen] = useState(false);
+
+  const closeMobile = () => {
+    if (isMobile) setOpenMobile(false);
+  };
 
   return (
     <SidebarMenu>
@@ -27,15 +44,21 @@ const ProfileDropdown = () => {
           {!collapsed && (
             <>
               <div className="relative shrink-0">
-                <Avatar className="h-8 w-8">
+                <Avatar className="size-8">
                   <AvatarImage
                     src={user.avatar}
+                    width={32}
+                    height={32}
                     className="object-cover"
                     alt={user.name}
                   />
                   <AvatarFallback>HM</AvatarFallback>
                 </Avatar>
-                <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-green-500 ring-2 ring-sidebar" />
+                <span
+                  className="absolute bottom-0 right-0 size-2.5 rounded-full bg-success ring-2 ring-sidebar"
+                  role="status"
+                  aria-label="Online"
+                />
               </div>
               <div className="grid min-w-0 flex-1 text-left leading-tight">
                 <span className="truncate text-sm font-semibold">{user.name}</span>
@@ -53,9 +76,11 @@ const ProfileDropdown = () => {
                 className="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
                 {collapsed ? (
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="size-8">
                     <AvatarImage
                       src={user.avatar}
+                      width={32}
+                      height={32}
                       className="object-cover"
                       alt={user.name}
                     />
@@ -72,11 +97,44 @@ const ProfileDropdown = () => {
               align="end"
               sideOffset={8}
             >
-              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/settings/profile" onClick={closeMobile}>
+                  Profile
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => setLogoutOpen(true)}
+              >
+                Log out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <Dialog open={logoutOpen} onOpenChange={setLogoutOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Log out?</DialogTitle>
+                <DialogDescription>
+                  You will leave this workspace on this device.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setLogoutOpen(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    setLogoutOpen(false);
+                    toast.success('Signed out');
+                  }}
+                >
+                  Log out
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </SidebarMenuItem>
     </SidebarMenu>

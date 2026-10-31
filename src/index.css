@@ -30,6 +30,12 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -53,20 +59,44 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    color-scheme: light;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overscroll-behavior: none;
+  }
+  button,
+  [role='button'],
+  a {
+    touch-action: manipulation;
+  }
+  button,
+  [role='button'] {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  @media (pointer: coarse) {
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
   }
   [data-slot='page'] :where(h1) {
-    @apply text-2xl font-semibold tracking-tight text-balance;
+    @apply scroll-mt-16 text-2xl font-semibold tracking-tight text-balance;
   }
   [data-slot='page'] :where(h2) {
-    @apply text-lg font-semibold tracking-tight;
+    @apply scroll-mt-16 text-lg font-semibold tracking-tight;
   }
   [data-slot='page'] :where(h3) {
-    @apply text-base font-medium;
+    @apply scroll-mt-16 text-base font-medium;
   }
   [data-slot='page'] :where(h4) {
     @apply text-sm font-medium;
@@ -89,14 +119,20 @@
   --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: oklch(0.606 0.25 292.717);
   --primary-foreground: oklch(0.969 0.016 293.756);
-  --secondary: oklch(0.967 0.001 286.375);
+  --secondary: oklch(0.945 0.002 286);
   --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
+  --muted: oklch(0.945 0.002 286);
   --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
+  --accent: oklch(0.945 0.002 286);
   --accent-foreground: oklch(0.21 0.006 285.885);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
+  --success: oklch(0.55 0.13 155);
+  --success-foreground: oklch(0.98 0.01 155);
+  --warning: oklch(0.55 0.12 75);
+  --warning-foreground: oklch(0.99 0.01 85);
+  --info: oklch(0.5 0.1 250);
+  --info-foreground: oklch(0.98 0.01 250);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.606 0.25 292.717);
@@ -132,6 +168,12 @@
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.985 0 0);
+  --success: oklch(0.75 0.13 155);
+  --success-foreground: oklch(0.2 0.04 155);
+  --warning: oklch(0.8 0.12 85);
+  --warning-foreground: oklch(0.25 0.05 75);
+  --info: oklch(0.75 0.08 250);
+  --info-foreground: oklch(0.2 0.04 250);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.541 0.281 293.009);
@@ -148,4 +190,23 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.541 0.281 293.009);
+}
+
+html [data-sonner-toaster][data-sonner-theme='light'],
+html [data-sonner-toaster][data-sonner-theme='dark'] {
+  --normal-bg: var(--popover);
+  --normal-text: var(--popover-foreground);
+  --normal-border: var(--border);
+  --success-bg: color-mix(in oklch, var(--success) 14%, var(--popover));
+  --success-border: color-mix(in oklch, var(--success) 32%, var(--border));
+  --success-text: var(--success);
+  --warning-bg: color-mix(in oklch, var(--warning) 14%, var(--popover));
+  --warning-border: color-mix(in oklch, var(--warning) 32%, var(--border));
+  --warning-text: var(--warning);
+  --info-bg: color-mix(in oklch, var(--info) 14%, var(--popover));
+  --info-border: color-mix(in oklch, var(--info) 32%, var(--border));
+  --info-text: var(--info);
+  --error-bg: color-mix(in oklch, var(--destructive) 12%, var(--popover));
+  --error-border: color-mix(in oklch, var(--destructive) 32%, var(--border));
+  --error-text: var(--destructive);
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowDown, ArrowUp, Search, Undo2, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -67,6 +67,7 @@ const groups = buildGroups();
 
 const CommandBox = () => {
   const navigate = useNavigate();
+  const openInPlace = React.useRef(true);
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -86,9 +87,9 @@ const CommandBox = () => {
       <Button
         variant="outline"
         onClick={() => setOpen(true)}
-        className="h-8 w-full justify-start px-2 font-normal text-muted-foreground"
+        className="h-8 w-full justify-start border-sidebar-border bg-sidebar px-2 font-normal text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
       >
-        <Search className="size-4" />
+        <Search />
         Search
         <Kbd className="ml-auto">⌘K</Kbd>
       </Button>
@@ -98,7 +99,7 @@ const CommandBox = () => {
         showCloseButton={false}
         className="gap-0 p-0 sm:max-w-lg"
       >
-        <CommandInput placeholder="Type a command or search..." />
+        <CommandInput placeholder="Type a command or search…" />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           {groups.map((group, index) => (
@@ -111,15 +112,29 @@ const CommandBox = () => {
                 {group.items.map((item) => (
                   <CommandItem
                     key={item.url}
+                    asChild
                     value={`${group.heading} ${item.label}`}
-                    className="h-8 py-0! [&_svg]:size-4!"
                     onSelect={() => {
                       setOpen(false);
-                      navigate(item.url);
+                      if (openInPlace.current) navigate(item.url);
+                      openInPlace.current = true;
                     }}
                   >
-                    <item.icon />
-                    <span>{item.label}</span>
+                    <Link
+                      to={item.url}
+                      onPointerDown={(event) => {
+                        openInPlace.current = !(
+                          event.metaKey ||
+                          event.ctrlKey ||
+                          event.shiftKey ||
+                          event.altKey ||
+                          event.button !== 0
+                        );
+                      }}
+                    >
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </Link>
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -136,7 +151,7 @@ const CommandBox = () => {
             <div className="flex size-5 items-center justify-center rounded border">
               <Undo2 className="size-4" />
             </div>
-            <span>To Select</span>
+            <span>To select</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="flex size-5 items-center justify-center rounded border">
@@ -145,7 +160,7 @@ const CommandBox = () => {
             <div className="flex size-5 items-center justify-center rounded border">
               <ArrowDown className="size-4" />
             </div>
-            <span>To Navigate</span>
+            <span>To navigate</span>
           </div>
         </div>
       </CommandDialog>

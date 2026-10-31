@@ -4,36 +4,30 @@ import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 const ThemeButton = () => {
-  const { setTheme, theme, systemTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState<boolean>(false);
-  // useEffect only runs on the client, so now we can safely show the UI
+
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
+  if (!mounted || !resolvedTheme) {
     return null;
   }
-  if (theme && theme == 'dark') {
-    return (
-      <React.Fragment>
-        <Button variant="ghost" onClick={() => setTheme('light')} size="icon" className="h-7 w-7">
-          <Moon />
-          <span className="sr-only">Light mode</span>
-        </Button>
-      </React.Fragment>
-    );
-  }
-  if (theme && theme == 'light') {
-    return (
-      <React.Fragment>
-        <Button variant="ghost" onClick={() => setTheme('dark')} size="icon" className="h-7 w-7">
-          <Sun />
-          <span className="sr-only">Dark mode</span>
-        </Button>
-      </React.Fragment>
-    );
-  }
+
+  const isDark = resolvedTheme === 'dark';
+
+  return (
+    <Button
+      variant="ghost"
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      size="icon"
+      className="size-7"
+    >
+      {isDark ? <Moon /> : <Sun />}
+      <span className="sr-only">{isDark ? 'Light mode' : 'Dark mode'}</span>
+    </Button>
+  );
 };
 
 export default ThemeButton;

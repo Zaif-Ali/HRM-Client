@@ -11,7 +11,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -72,7 +71,9 @@ export function WorkspaceSwitcher() {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{active.name}</span>
-                <span className="truncate text-xs">{active.detail}</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {active.detail}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -86,7 +87,7 @@ export function WorkspaceSwitcher() {
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Workspaces
             </DropdownMenuLabel>
-            {workspaces.map((workspace, index) => (
+            {workspaces.map((workspace) => (
               <DropdownMenuItem
                 key={workspace.id}
                 onClick={() => setActiveId(workspace.id)}
@@ -96,7 +97,6 @@ export function WorkspaceSwitcher() {
                   <workspace.logo className="size-3.5 shrink-0" />
                 </div>
                 {workspace.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

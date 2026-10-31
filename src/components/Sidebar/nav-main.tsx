@@ -33,19 +33,19 @@ export function NavMain() {
 
   if (activeDropdown) {
     return (
-      <SidebarGroup className="animate-in fade-in slide-in-from-left-2 gap-1 px-2 pb-2 pt-0 duration-200">
+      <SidebarGroup className="animate-in fade-in slide-in-from-left-2 gap-1 px-2 pb-2 pt-0 duration-200 motion-reduce:animate-none">
         <div className="flex h-8 items-center">
           <button
             type="button"
             aria-label="Back"
-            className="flex size-8 shrink-0 items-center justify-center rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            className="flex size-8 shrink-0 items-center justify-center rounded-md outline-hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
             onClick={() => setActiveSlug(null)}
           >
             <ArrowLeft className="size-4" />
           </button>
-          <h3 className="flex-1 text-center text-sm font-medium">
+          <div className="flex-1 text-center text-sm font-medium">
             {activeDropdown.title}
-          </h3>
+          </div>
           <div className="size-8 shrink-0" />
         </div>
         <SidebarGroupContent>
@@ -75,24 +75,19 @@ export function NavMain() {
     <>
       {navigationRoutes.map((section) => (
         <SidebarGroup key={section.title} className="gap-1 px-2 pb-2 pt-0">
-          <SidebarGroupLabel className="text-sm font-normal text-muted-foreground">
-            {section.title}
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>{section.title}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {section.items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   {item.type === 'route' ? (
                     <SidebarMenuButton
+                      asChild
                       tooltip={item.title}
                       isActive={item.url === pathname}
-                      onClick={closeMobile}
                     >
-                      <Link
-                        to={item.url}
-                        className="flex w-full items-center gap-2"
-                      >
-                        {item.icon && <item.icon className="h-4 w-4" />}
+                      <Link to={item.url} onClick={closeMobile}>
+                        {item.icon && <item.icon />}
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>

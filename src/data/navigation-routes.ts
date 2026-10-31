@@ -176,6 +176,24 @@ export function findDropdown(slug: string | null) {
   return null;
 }
 
+export function findPageTrail(pathname: string): { title: string }[] {
+  if (pathname === '/') return [{ title: 'Dashboard' }];
+
+  for (const section of navigationRoutes) {
+    for (const item of section.items) {
+      if (item.type === 'route' && item.url === pathname) {
+        return [{ title: item.title }];
+      }
+      if (item.type === 'dropdown') {
+        const exact = item.items.find((subItem) => subItem.url === pathname);
+        if (exact) return [{ title: item.title }, { title: exact.title }];
+      }
+    }
+  }
+
+  return [{ title: 'Page' }];
+}
+
 export function findDropdownForPath(pathname: string) {
   for (const section of navigationRoutes) {
     for (const item of section.items) {

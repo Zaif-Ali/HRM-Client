@@ -73,7 +73,7 @@ function PageHeader({
   className?: string
 }) {
   return (
-    <div className={cn("flex flex-col gap-1", className)}>
+    <div className={cn("flex max-w-[70ch] flex-col gap-1", className)}>
       <H1>{title}</H1>
       {description ? <Muted>{description}</Muted> : null}
     </div>
