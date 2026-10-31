@@ -9,7 +9,10 @@ export default function SideBarLayout() {
       <SidebarLeft />
       <SidebarInset>
         <Header />
-        <div className="flex flex-1 flex-col gap-4 p-4 bg-background">
+        <div
+          data-slot="page"
+          className="flex flex-1 flex-col gap-4 bg-background p-4"
+        >
           <Outlet />
         </div>
       </SidebarInset>

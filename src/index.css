@@ -59,6 +59,24 @@
   html {
     @apply font-sans;
   }
+  [data-slot='page'] :where(h1) {
+    @apply text-2xl font-semibold tracking-tight text-balance;
+  }
+  [data-slot='page'] :where(h2) {
+    @apply text-lg font-semibold tracking-tight;
+  }
+  [data-slot='page'] :where(h3) {
+    @apply text-base font-medium;
+  }
+  [data-slot='page'] :where(h4) {
+    @apply text-sm font-medium;
+  }
+  [data-slot='page'] :where(p) {
+    @apply text-sm leading-6;
+  }
+  [data-slot='page'] :where(small) {
+    @apply text-xs leading-none text-muted-foreground;
+  }
 }
 
 :root {
