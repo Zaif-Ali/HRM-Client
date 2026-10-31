@@ -10,6 +10,7 @@ import {
   Settings,
   Shield,
   User,
+  Users,
 } from 'lucide-react';
 
 type NavigationRoute = {
@@ -45,58 +46,47 @@ export const navigationRoutes: TNavigationRoutes[] = [
         type: 'route',
       },
       {
-        title: 'Attendance',
-        slug: 'attendance',
-        url: '/attendance',
-        icon: Cctv,
-        type: 'route',
-      },
-      {
-        title: 'Payroll',
-        slug: 'payroll',
-        url: '/payroll',
-        icon: Banknote,
-        type: 'route',
-      },
-    ],
-  },
-  {
-    title: 'User Management',
-    items: [
-      {
-        title: 'Users',
-        slug: 'users',
-        url: '/users',
-        icon: User,
-        type: 'route',
-      },
-      {
-        title: 'Roles',
-        slug: 'roles',
-        url: '/roles',
-        icon: Shield,
-        type: 'route',
-      },
-      {
-        title: 'Permissions',
-        slug: 'permissions',
-        url: '/permissions',
-        icon: Lock,
-        type: 'route',
-      },
-      {
-        title: 'Departments',
-        slug: 'departments',
-        url: '/departments',
-        icon: Building,
-        type: 'route',
-      },
-      {
-        title: 'Invitations',
-        slug: 'invitations',
-        url: '/invitations',
-        icon: Mail,
-        type: 'route',
+        title: 'User Management',
+        slug: 'user-management',
+        type: 'dropdown',
+        icon: Users,
+        items: [
+          {
+            title: 'Users',
+            slug: 'users',
+            url: '/users',
+            icon: User,
+            type: 'route',
+          },
+          {
+            title: 'Roles',
+            slug: 'roles',
+            url: '/roles',
+            icon: Shield,
+            type: 'route',
+          },
+          {
+            title: 'Permissions',
+            slug: 'permissions',
+            url: '/permissions',
+            icon: Lock,
+            type: 'route',
+          },
+          {
+            title: 'Departments',
+            slug: 'departments',
+            url: '/departments',
+            icon: Building,
+            type: 'route',
+          },
+          {
+            title: 'Invitations',
+            slug: 'invitations',
+            url: '/invitations',
+            icon: Mail,
+            type: 'route',
+          },
+        ],
       },
     ],
   },
@@ -128,3 +118,30 @@ export const navigationRoutes: TNavigationRoutes[] = [
     ],
   },
 ];
+
+export function findDropdown(slug: string | null) {
+  if (!slug) return null;
+  for (const section of navigationRoutes) {
+    for (const item of section.items) {
+      if (item.type === 'dropdown' && item.slug === slug) return item;
+    }
+  }
+  return null;
+}
+
+export function findDropdownForPath(pathname: string) {
+  for (const section of navigationRoutes) {
+    for (const item of section.items) {
+      if (
+        item.type === 'dropdown' &&
+        item.items.some(
+          (subItem) =>
+            pathname === subItem.url || pathname.startsWith(`${subItem.url}/`),
+        )
+      ) {
+        return item;
+      }
+    }
+  }
+  return null;
+}

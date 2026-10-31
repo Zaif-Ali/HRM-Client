@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -6,22 +6,71 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { Link, useLocation } from 'react-router-dom';
-import { navigationRoutes } from '@/data/navigation-routes';
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '../ui/collapsible';
+  findDropdown,
+  findDropdownForPath,
+  navigationRoutes,
+} from '@/data/navigation-routes';
 import React from 'react';
 
 export function NavMain() {
   const { pathname } = useLocation();
-  const firstIndex = pathname.split('/')[1] || '/';
+  const { isMobile, setOpenMobile } = useSidebar();
+  const [activeSlug, setActiveSlug] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    setActiveSlug(findDropdownForPath(pathname)?.slug ?? null);
+  }, [pathname]);
+
+  const activeDropdown = findDropdown(activeSlug);
+
+  const closeMobile = () => {
+    if (isMobile) setOpenMobile(false);
+  };
+
+  if (activeDropdown) {
+    return (
+      <SidebarGroup className="animate-in fade-in slide-in-from-left-2 gap-1 px-2 pb-2 pt-0 duration-200">
+        <div className="flex h-8 items-center">
+          <button
+            type="button"
+            aria-label="Back"
+            className="flex size-8 shrink-0 items-center justify-center rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            onClick={() => setActiveSlug(null)}
+          >
+            <ArrowLeft className="size-4" />
+          </button>
+          <h3 className="flex-1 text-center text-sm font-medium">
+            {activeDropdown.title}
+          </h3>
+          <div className="size-8 shrink-0" />
+        </div>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {activeDropdown.items.map((subItem) => (
+              <SidebarMenuItem key={subItem.slug}>
+                <SidebarMenuButton
+                  asChild
+                  tooltip={subItem.title}
+                  isActive={subItem.url === pathname}
+                  onClick={closeMobile}
+                >
+                  <Link to={subItem.url}>
+                    <subItem.icon />
+                    <span>{subItem.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    );
+  }
+
   return (
     <>
       {navigationRoutes.map((section) => (
@@ -32,54 +81,35 @@ export function NavMain() {
           <SidebarGroupContent>
             <SidebarMenu>
               {section.items.map((item) => (
-                <React.Fragment key={item.title}>
+                <SidebarMenuItem key={item.title}>
                   {item.type === 'route' ? (
-                    <SidebarMenuItem>
-                      <SidebarMenuButton
-                        tooltip={item.title}
-                        isActive={item.url == pathname}
-                      >
-                        <Link
-                          to={item.url}
-                          className="flex w-full items-center gap-2"
-                        >
-                          {item.icon && <item.icon className="h-4 w-4" />}
-                          <span>{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ) : (
-                    <Collapsible
-                      asChild
-                      defaultOpen={item.slug == firstIndex}
-                      className="group/collapsible"
+                    <SidebarMenuButton
+                      tooltip={item.title}
+                      isActive={item.url === pathname}
+                      onClick={closeMobile}
                     >
-                      <SidebarMenuItem>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuButton tooltip={item.title}>
-                            {item.icon && <item.icon />}
-                            <span>{item.title}</span>
-                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                          </SidebarMenuButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub className="gap-1">
-                            {item.items.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.title}>
-                                <SidebarMenuSubButton
-                                  asChild
-                                  isActive={subItem.url == pathname}
-                                >
-                                  <Link to={subItem.url}>{subItem.title}</Link>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </SidebarMenuItem>
-                    </Collapsible>
+                      <Link
+                        to={item.url}
+                        className="flex w-full items-center gap-2"
+                      >
+                        {item.icon && <item.icon className="h-4 w-4" />}
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  ) : (
+                    <SidebarMenuButton
+                      tooltip={item.title}
+                      isActive={item.items.some(
+                        (subItem) => subItem.url === pathname,
+                      )}
+                      onClick={() => setActiveSlug(item.slug)}
+                    >
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                      <ChevronRight className="ml-auto" />
+                    </SidebarMenuButton>
                   )}
-                </React.Fragment>
+                </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
