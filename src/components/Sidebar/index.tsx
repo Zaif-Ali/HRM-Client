@@ -17,7 +17,7 @@ export default function SideBarLayout() {
         <Header />
         <div
           data-slot="page"
-          className="flex flex-1 flex-col gap-4 bg-background p-4"
+          className="flex flex-1 flex-col gap-4 bg-background px-4"
         >
           <Outlet />
         </div>

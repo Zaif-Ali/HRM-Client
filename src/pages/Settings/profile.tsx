@@ -27,15 +27,11 @@ const DEFAULT_AVATAR =
 
 const MAX_AVATAR_BYTES = 1024 * 1024;
 
-const COUNTRIES = [
-  { value: 'PK', label: 'Pakistan' },
-  { value: 'US', label: 'United States' },
-  { value: 'GB', label: 'United Kingdom' },
-  { value: 'AE', label: 'United Arab Emirates' },
-  { value: 'CA', label: 'Canada' },
-  { value: 'DE', label: 'Germany' },
-  { value: 'IN', label: 'India' },
-  { value: 'AU', label: 'Australia' },
+const GENDERS = [
+  { value: 'woman', label: 'Woman' },
+  { value: 'man', label: 'Man' },
+  { value: 'non-binary', label: 'Non-binary' },
+  { value: 'unspecified', label: 'Prefer not to say' },
 ];
 
 const PASSWORD_RULES = [
@@ -79,12 +75,11 @@ const profileSchema = z.object({
       (value) => value === '' || isValidPhoneNumber(value),
       'Enter a valid phone number.'
     ),
-  country: z.string().min(1, 'Select a country.'),
+  gender: z.string(),
 });
 
-const emailSchema = z
+const passwordSchema = z
   .object({
-    email: z.string().email('That does not look like an email.'),
     currentPassword: z.string(),
     newPassword: z.string(),
   })
@@ -120,7 +115,7 @@ const Profile = () => {
       lastName: 'Majeed',
       username: 'huzaifa',
       mobile: '+923001234567',
-      country: 'PK',
+      gender: '',
     },
     validators: formValidators(profileSchema),
     onSubmit: ({ value }) => {
@@ -129,18 +124,17 @@ const Profile = () => {
     },
   });
 
-  const emailForm = useAppForm({
+  const passwordForm = useAppForm({
     defaultValues: {
-      email: 'huzaifa@gmail.com',
       currentPassword: '',
       newPassword: '',
     },
-    validators: formValidators(emailSchema),
+    validators: formValidators(passwordSchema),
     onSubmit: ({ value, formApi }) => {
       const changedPassword = value.newPassword !== '';
       formApi.setFieldValue('currentPassword', '');
       formApi.setFieldValue('newPassword', '');
-      toast.success(changedPassword ? 'Email and password saved' : 'Email saved');
+      toast.success(changedPassword ? 'Password saved' : 'No changes to save');
     },
   });
 
@@ -160,7 +154,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex w-full max-w-5xl flex-col">
+    <div className="flex w-full max-w-3xl flex-col mx-auto">
       <h1 className="sr-only">Profile</h1>
       <SettingsSection
         title="Personal information"
@@ -271,13 +265,12 @@ const Profile = () => {
               )}
             />
             <profileForm.AppField
-              name="country"
+              name="gender"
               children={(field) => (
                 <field.SelectField
-                  label="Country"
-                  placeholder="Select a country"
-                  options={COUNTRIES}
-                  required
+                  label="Gender"
+                  placeholder="Select"
+                  options={GENDERS}
                 />
               )}
             />
@@ -294,8 +287,8 @@ const Profile = () => {
       <Separator />
 
       <SettingsSection
-        title="Email & password"
-        description="Manage your email and password settings."
+        title="Password"
+        description="Change the password for this account."
       >
         <form
           className="flex flex-col gap-5"
@@ -303,14 +296,10 @@ const Profile = () => {
           onSubmit={(event) => {
             event.preventDefault();
             event.stopPropagation();
-            void emailForm.handleSubmit();
+            void passwordForm.handleSubmit();
           }}
         >
-          <emailForm.AppField
-            name="email"
-            children={(field) => <field.EmailField label="Email" required />}
-          />
-          <emailForm.AppField
+          <passwordForm.AppField
             name="currentPassword"
             children={(field) => (
               <field.PasswordField
@@ -320,7 +309,7 @@ const Profile = () => {
               />
             )}
           />
-          <emailForm.AppField
+          <passwordForm.AppField
             name="newPassword"
             children={(field) => (
               <field.PasswordField
@@ -331,7 +320,7 @@ const Profile = () => {
             )}
           />
 
-          <emailForm.Subscribe selector={(state) => state.values.newPassword}>
+          <passwordForm.Subscribe selector={(state) => state.values.newPassword}>
             {(password) => (
               <div className="flex flex-col gap-2">
                 <p className="text-sm font-medium">
@@ -360,12 +349,12 @@ const Profile = () => {
                 </ul>
               </div>
             )}
-          </emailForm.Subscribe>
+          </passwordForm.Subscribe>
 
           <div className="flex justify-end">
-            <emailForm.AppForm>
-              <emailForm.SubmitButton>Save changes</emailForm.SubmitButton>
-            </emailForm.AppForm>
+            <passwordForm.AppForm>
+              <passwordForm.SubmitButton>Save changes</passwordForm.SubmitButton>
+            </passwordForm.AppForm>
           </div>
         </form>
       </SettingsSection>

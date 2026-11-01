@@ -1,7 +1,9 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
+import { CheckIcon, CircleAlertIcon } from "lucide-react"
 import { Slot } from "radix-ui"
+import { Spinner } from "@/components/ui/spinner"
 
 const buttonVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -42,21 +44,60 @@ function Button({
   variant = "default",
   size = "default",
   asChild = false,
+  status,
+  disabled,
+  children,
+  "aria-invalid": ariaInvalid,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
+    status?: "loading" | "success" | "error"
   }) {
   const Comp = asChild ? Slot.Root : "button"
+  const loading = status === "loading"
+  const compact = size === "xs" || size === "icon-xs"
+  const iconOnly =
+    size === "icon" ||
+    size === "icon-xs" ||
+    size === "icon-sm" ||
+    size === "icon-lg"
+  const indicator = loading ? (
+    <Spinner
+      data-icon={iconOnly ? undefined : "inline-start"}
+      className={compact ? "size-3" : undefined}
+      aria-hidden
+    />
+  ) : status === "success" ? (
+    <CheckIcon data-icon={iconOnly ? undefined : "inline-start"} aria-hidden />
+  ) : status === "error" ? (
+    <CircleAlertIcon
+      data-icon={iconOnly ? undefined : "inline-start"}
+      aria-hidden
+    />
+  ) : null
 
   return (
     <Comp
       data-slot="button"
       data-variant={variant}
       data-size={size}
+      data-status={status}
       className={cn(buttonVariants({ variant, size, className }))}
+      disabled={disabled || loading || undefined}
+      aria-busy={loading || undefined}
+      aria-invalid={status === "error" || ariaInvalid || undefined}
       {...props}
-    />
+    >
+      {asChild ? (
+        children
+      ) : (
+        <>
+          {indicator}
+          {iconOnly && status ? null : children}
+        </>
+      )}
+    </Comp>
   )
 }
 

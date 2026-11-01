@@ -11,7 +11,12 @@ function SubmitButton({
   const isSubmitting = useSelector(form.store, (state) => state.isSubmitting);
 
   return (
-    <Button type="submit" disabled={disabled || isSubmitting} {...props}>
+    <Button
+      type="submit"
+      status={isSubmitting ? "loading" : undefined}
+      disabled={disabled}
+      {...props}
+    >
       {children}
     </Button>
   );

@@ -45,7 +45,7 @@ function SelectField({
         const props = choiceControlProps(control);
         return (
           <Select
-            value={field.state.value}
+            value={field.state.value === '' ? undefined : field.state.value}
             open={disclosure.open}
             disabled={props.disabled}
             onOpenChange={disclosure.onOpenChange}
