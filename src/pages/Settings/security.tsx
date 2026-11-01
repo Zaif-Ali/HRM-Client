@@ -4,7 +4,7 @@ const Security = () => {
   return (
     <PageHeader
       title="Security"
-      description="Password, two-factor authentication, and sessions."
+      description="Two-factor authentication, passkeys, and sessions."
     />
   );
 };
