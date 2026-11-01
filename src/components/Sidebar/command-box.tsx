@@ -107,7 +107,7 @@ const CommandBox = () => {
               {index > 0 && <CommandSeparator />}
               <CommandGroup
                 heading={group.heading}
-                className="[&_[cmdk-group-items]]:flex [&_[cmdk-group-items]]:flex-col [&_[cmdk-group-items]]:gap-1"
+                className="**:[[cmdk-group-items]]:flex **:[[cmdk-group-items]]:flex-col **:[[cmdk-group-items]]:gap-1"
               >
                 {group.items.map((item) => (
                   <CommandItem

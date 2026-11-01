@@ -88,7 +88,7 @@ function FieldFrame({
   readOnly = false,
   inline = false,
   children,
-}: {
+}: Readonly<{
   label: string;
   description?: string;
   required?: boolean;
@@ -96,7 +96,7 @@ function FieldFrame({
   readOnly?: boolean;
   inline?: boolean;
   children: (props: FieldControlProps) => ReactNode;
-}) {
+}>) {
   const field = useFieldContext<unknown>();
   const submitted = useSelector(
     field.form.store,

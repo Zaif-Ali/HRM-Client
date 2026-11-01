@@ -179,8 +179,7 @@ const Dashboard = () => {
   });
 
   return (
-    <React.Fragment>
-      <main className="flex flex-col xl:flex-row gap-4">
+    <main className="flex flex-col xl:flex-row gap-4">
         <section className="xl:w-3/5">
           <BlurFade delay={0.25} inView>
             <Label className="text-3xl sm:text-3xl text-pretty tracking-tighter xl:text-4xl">
@@ -426,7 +425,7 @@ const Dashboard = () => {
                 <CardContent className="flex flex-1 items-center pb-0">
                   <ChartContainer
                     config={chartConfig}
-                    className="mx-auto aspect-square w-full max-w-[250px]"
+                    className="mx-auto aspect-square w-full max-w-62.5"
                   >
                     <RadialBarChart
                       data={chartData}
@@ -496,7 +495,6 @@ const Dashboard = () => {
           </div>
         </section>
       </main>
-    </React.Fragment>
   );
 };
 export default Dashboard;
