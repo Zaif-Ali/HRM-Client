@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from 'cn';
 import { Button } from '@/components/ui/button';
@@ -16,7 +15,11 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useFieldContext } from '@/components/form/context';
-import { FieldFrame, controlProps } from '@/components/form/field-frame';
+import {
+  FieldFrame,
+  choiceControlProps,
+  useReadOnlyOpen,
+} from '@/components/form/field-frame';
 
 function ComboboxField({
   label,
@@ -28,7 +31,7 @@ function ComboboxField({
   required,
   disabled,
   readOnly,
-}: {
+}: Readonly<{
   label: string;
   description?: string;
   placeholder?: string;
@@ -38,9 +41,9 @@ function ComboboxField({
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
-}) {
+}>) {
   const field = useFieldContext<string>();
-  const [open, setOpen] = useState(false);
+  const disclosure = useReadOnlyOpen(Boolean(readOnly));
   const selected = options.find((option) => option.value === field.state.value);
 
   return (
@@ -52,21 +55,21 @@ function ComboboxField({
       readOnly={readOnly}
     >
       {(control) => {
-        const props = controlProps(control);
+        const props = choiceControlProps(control);
         return (
-          <Popover open={open} onOpenChange={setOpen}>
+          <Popover open={disclosure.open} onOpenChange={disclosure.onOpenChange}>
             <PopoverTrigger asChild>
               <Button
                 type="button"
                 variant="outline"
                 role="combobox"
                 id={props.id}
-                aria-expanded={open}
-                disabled={props.disabled || props.readOnly}
+                aria-expanded={disclosure.open}
+                disabled={props.disabled}
                 aria-invalid={props['aria-invalid']}
                 aria-describedby={props['aria-describedby']}
                 aria-required={props['aria-required']}
-                aria-readonly={control.readOnly || undefined}
+                aria-readonly={props['aria-readonly']}
                 className={cn(
                   'w-full justify-between font-normal',
                   !selected && 'text-muted-foreground'
@@ -93,8 +96,9 @@ function ComboboxField({
                         key={option.value}
                         value={option.label}
                         onSelect={() => {
+                          if (control.readOnly) return;
                           field.handleChange(option.value);
-                          setOpen(false);
+                          disclosure.onOpenChange(false);
                         }}
                       >
                         <span className="flex-1 truncate">{option.label}</span>

@@ -1,5 +1,5 @@
-import { useId, type ReactNode } from 'react';
-import { useStore } from '@tanstack/react-form';
+import { useId, useState, type ReactNode } from 'react';
+import { useSelector } from '@tanstack/react-form';
 import {
   Field,
   FieldDescription,
@@ -36,6 +36,35 @@ function controlProps({
   };
 }
 
+function choiceControlProps({
+  id,
+  invalid,
+  describedBy,
+  required,
+  disabled,
+  readOnly,
+}: FieldControlProps) {
+  return {
+    id,
+    'aria-invalid': invalid || undefined,
+    'aria-describedby': describedBy,
+    'aria-required': required || undefined,
+    'aria-readonly': readOnly || undefined,
+    disabled: disabled || undefined,
+  };
+}
+
+function useReadOnlyOpen(readOnly: boolean) {
+  const [open, setOpen] = useState(false);
+  return {
+    open: readOnly ? false : open,
+    onOpenChange: (next: boolean) => {
+      if (readOnly) return;
+      setOpen(next);
+    },
+  };
+}
+
 function toFieldErrors(errors: ReadonlyArray<unknown>) {
   return errors.flatMap((error) => {
     if (typeof error === 'string') return [{ message: error }];
@@ -68,8 +97,8 @@ function FieldFrame({
   inline?: boolean;
   children: (props: FieldControlProps) => ReactNode;
 }) {
-  const field = useFieldContext<string>();
-  const submitted = useStore(
+  const field = useFieldContext<unknown>();
+  const submitted = useSelector(
     field.form.store,
     (state) => state.submissionAttempts > 0
   );
@@ -131,5 +160,5 @@ function FieldFrame({
   );
 }
 
-export { FieldFrame, controlProps };
+export { FieldFrame, choiceControlProps, controlProps, useReadOnlyOpen };
 export type { FieldControlProps };

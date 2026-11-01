@@ -10,7 +10,7 @@ function TextareaField({
   disabled,
   readOnly,
   rows = 4,
-}: {
+}: Readonly<{
   label: string;
   description?: string;
   placeholder?: string;
@@ -18,7 +18,7 @@ function TextareaField({
   disabled?: boolean;
   readOnly?: boolean;
   rows?: number;
-}) {
+}>) {
   const field = useFieldContext<string>();
 
   return (

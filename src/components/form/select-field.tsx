@@ -7,7 +7,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useFieldContext } from '@/components/form/context';
-import { FieldFrame, controlProps } from '@/components/form/field-frame';
+import {
+  FieldFrame,
+  choiceControlProps,
+  useReadOnlyOpen,
+} from '@/components/form/field-frame';
 
 function SelectField({
   label,
@@ -27,6 +31,7 @@ function SelectField({
   readOnly?: boolean;
 }) {
   const field = useFieldContext<string>();
+  const disclosure = useReadOnlyOpen(Boolean(readOnly));
 
   return (
     <FieldFrame
@@ -37,12 +42,17 @@ function SelectField({
       readOnly={readOnly}
     >
       {(control) => {
-        const props = controlProps(control);
+        const props = choiceControlProps(control);
         return (
           <Select
             value={field.state.value}
-            disabled={props.disabled || props.readOnly}
-            onValueChange={(value) => field.handleChange(value)}
+            open={disclosure.open}
+            disabled={props.disabled}
+            onOpenChange={disclosure.onOpenChange}
+            onValueChange={(value) => {
+              if (control.readOnly) return;
+              field.handleChange(value);
+            }}
           >
             <SelectTrigger
               id={props.id}
@@ -50,7 +60,7 @@ function SelectField({
               aria-invalid={props['aria-invalid']}
               aria-describedby={props['aria-describedby']}
               aria-required={props['aria-required']}
-              aria-readonly={control.readOnly || undefined}
+              aria-readonly={props['aria-readonly']}
               onBlur={field.handleBlur}
             >
               <SelectValue placeholder={placeholder} />

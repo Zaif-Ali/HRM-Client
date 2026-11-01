@@ -67,6 +67,7 @@ const PASSWORD_RULES = [
 ];
 
 const profileSchema = z.object({
+  avatar: z.string(),
   firstName: z.string().trim().min(1, 'Enter your first name.'),
   lastName: z.string().trim().min(1, 'Enter your last name.'),
   username: z
@@ -107,7 +108,6 @@ const emailSchema = z
   });
 
 const Profile = () => {
-  const fileRef = useRef<HTMLInputElement>(null);
   const uploadedUrl = useRef<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(DEFAULT_AVATAR);
   const [savedName, setSavedName] = useState('Huzaifa Majeed');
@@ -115,6 +115,7 @@ const Profile = () => {
 
   const profileForm = useAppForm({
     defaultValues: {
+      avatar: '',
       firstName: 'Huzaifa',
       lastName: 'Majeed',
       username: 'huzaifa',
@@ -143,12 +144,7 @@ const Profile = () => {
     },
   });
 
-  const onAvatar = (file: File | undefined) => {
-    if (!file) return;
-    if (!file.type.startsWith('image/') || file.size > MAX_AVATAR_BYTES) {
-      toast.error('Pick a photo up to 1MB.');
-      return;
-    }
+  const showAvatar = (file: File) => {
     if (uploadedUrl.current) URL.revokeObjectURL(uploadedUrl.current);
     const url = URL.createObjectURL(file);
     uploadedUrl.current = url;
@@ -179,51 +175,59 @@ const Profile = () => {
             void profileForm.handleSubmit();
           }}
         >
-          <div className="flex flex-col gap-3">
-            <p className="text-sm font-medium">Your avatar</p>
-            <div className="flex items-center gap-3">
-              <Avatar className="size-16 border">
-                {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
-                <AvatarFallback>
-                  <ImageIcon />
-                </AvatarFallback>
-              </Avatar>
-              <input
-                ref={fileRef}
-                type="file"
+          <profileForm.AppField
+            name="avatar"
+            children={(field) => (
+              <field.FileField
+                label="Your avatar"
+                description="Pick a photo up to 1MB."
                 accept="image/png,image/jpeg,image/webp"
-                className="sr-only"
-                tabIndex={-1}
-                aria-hidden
-                onChange={(event) => {
-                  onAvatar(event.target.files?.[0]);
-                  event.target.value = '';
-                }}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => fileRef.current?.click()}
+                maxBytes={MAX_AVATAR_BYTES}
+                onFile={showAvatar}
               >
-                <Upload data-icon="inline-start" />
-                Upload avatar
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                aria-label="Remove avatar"
-                disabled={!avatarUrl}
-                onClick={removeAvatar}
-              >
-                <Trash2 />
-              </Button>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Pick a photo up to 1MB.
-            </p>
-          </div>
+                {(controls) => (
+                  <div className="flex items-center gap-3">
+                    <Avatar className="size-16 border">
+                      {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
+                      <AvatarFallback>
+                        <ImageIcon />
+                      </AvatarFallback>
+                    </Avatar>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      id={controls.id}
+                      aria-label="Upload avatar"
+                      disabled={controls.disabled}
+                      aria-invalid={controls['aria-invalid']}
+                      aria-describedby={controls['aria-describedby']}
+                      aria-required={controls['aria-required']}
+                      aria-readonly={controls['aria-readonly']}
+                      onBlur={controls.onBlur}
+                      onClick={controls.open}
+                    >
+                      <Upload data-icon="inline-start" />
+                      Upload avatar
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      aria-label="Remove avatar"
+                      disabled={!avatarUrl}
+                      onClick={() => {
+                        controls.clear();
+                        removeAvatar();
+                      }}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </div>
+                )}
+              </field.FileField>
+            )}
+          />
 
           <FieldGroup className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
             <profileForm.AppField

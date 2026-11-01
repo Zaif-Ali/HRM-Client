@@ -9,7 +9,11 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useFieldContext } from '@/components/form/context';
-import { FieldFrame, controlProps } from '@/components/form/field-frame';
+import {
+  FieldFrame,
+  choiceControlProps,
+  useReadOnlyOpen,
+} from '@/components/form/field-frame';
 
 function toDate(value: string) {
   if (!value) return undefined;
@@ -24,16 +28,17 @@ function DateField({
   required,
   disabled,
   readOnly,
-}: {
+}: Readonly<{
   label: string;
   description?: string;
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
-}) {
+}>) {
   const field = useFieldContext<string>();
   const selected = toDate(field.state.value);
+  const disclosure = useReadOnlyOpen(Boolean(readOnly));
 
   return (
     <FieldFrame
@@ -44,19 +49,19 @@ function DateField({
       readOnly={readOnly}
     >
       {(control) => {
-        const props = controlProps(control);
+        const props = choiceControlProps(control);
         return (
-          <Popover>
+          <Popover open={disclosure.open} onOpenChange={disclosure.onOpenChange}>
             <PopoverTrigger asChild>
               <Button
                 type="button"
                 variant="outline"
                 id={props.id}
-                disabled={props.disabled || props.readOnly}
+                disabled={props.disabled}
                 aria-invalid={props['aria-invalid']}
                 aria-describedby={props['aria-describedby']}
                 aria-required={props['aria-required']}
-                aria-readonly={control.readOnly || undefined}
+                aria-readonly={props['aria-readonly']}
                 className={cn(
                   'w-full justify-between font-normal',
                   !selected && 'text-muted-foreground'
@@ -71,9 +76,10 @@ function DateField({
               <Calendar
                 mode="single"
                 selected={selected}
-                onSelect={(date) =>
-                  field.handleChange(date ? format(date, 'yyyy-MM-dd') : '')
-                }
+                onSelect={(date) => {
+                  if (control.readOnly) return;
+                  field.handleChange(date ? format(date, 'yyyy-MM-dd') : '');
+                }}
               />
             </PopoverContent>
           </Popover>
