@@ -176,7 +176,12 @@ export function findDropdown(slug: string | null) {
   return null;
 }
 
-export function findPageTrail(pathname: string): { title: string }[] {
+export type PageCrumb = {
+  title: string;
+  url?: string;
+};
+
+export function findPageTrail(pathname: string): PageCrumb[] {
   if (pathname === '/') return [{ title: 'Dashboard' }];
 
   for (const section of navigationRoutes) {
@@ -186,7 +191,16 @@ export function findPageTrail(pathname: string): { title: string }[] {
       }
       if (item.type === 'dropdown') {
         const exact = item.items.find((subItem) => subItem.url === pathname);
-        if (exact) return [{ title: item.title }, { title: exact.title }];
+        if (exact) {
+          const sectionHome = item.items[0]?.url;
+          return [
+            {
+              title: item.title,
+              url: sectionHome,
+            },
+            { title: exact.title },
+          ];
+        }
       }
     }
   }

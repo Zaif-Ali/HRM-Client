@@ -1,10 +1,11 @@
 import { Fragment } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Separator } from '../ui/separator';
 import { SidebarTrigger } from '../ui/sidebar';
 import {
   Breadcrumb,
   BreadcrumbItem,
+  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -34,6 +35,10 @@ const Header = () => {
                         <BreadcrumbPage className="truncate">
                           {crumb.title}
                         </BreadcrumbPage>
+                      ) : crumb.url ? (
+                        <BreadcrumbLink asChild className="truncate">
+                          <Link to={crumb.url}>{crumb.title}</Link>
+                        </BreadcrumbLink>
                       ) : (
                         <span className="truncate">{crumb.title}</span>
                       )}
